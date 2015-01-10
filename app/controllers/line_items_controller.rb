@@ -6,7 +6,7 @@ class LineItemsController < ApplicationController
   def index
     @line_items = LineItem.all
   end
-
+ 
   # GET /line_items/1
   # GET /line_items/1.json
   def show
@@ -26,16 +26,18 @@ class LineItemsController < ApplicationController
   def create
     @cart = current_cart
     product = Product.find(params[:product_id])
-    @line_item = @cart.line_items.build(product: product)
+    @line_item = @cart.line_items.build(:product => product)
     #@line_item = LineItem.new(line_item_params)
 
     respond_to do |format|
       if @line_item.save
         format.html { redirect_to @line_item.cart, notice: 'Line item was successfully created.' }
         format.json { render :show, status: :created, location: @line_item }
+        format.xml  { render :xml => @line_item, :status => :created, :location => @line_item }
       else
         format.html { render :new }
         format.json { render json: @line_item.errors, status: :unprocessable_entity }
+        format.xml  { render :xml => @line_item.errors, :status => :unprocessable_entity }
       end
     end
   end
